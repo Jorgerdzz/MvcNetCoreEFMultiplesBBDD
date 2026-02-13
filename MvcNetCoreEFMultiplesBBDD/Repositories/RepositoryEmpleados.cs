@@ -1,6 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using MvcNetCoreEFMultiplesBBDD.Data;
 using MvcNetCoreEFMultiplesBBDD.Models;
+using System.Diagnostics.Metrics;
+
+#region
+/*ORACLE
+//create or replace view V_EMPLEADOS
+//as
+//    select EMP.EMP_NO as IDEMPLEADO, EMP.APELLIDO, EMP.OFICIO, EMP.SALARIO, DEPT.DEPT_NO, DEPT.DNOMBRE, DEPT.LOC
+//    from EMP
+//    inner join DEPT 
+//    on EMP.DEPT_NO = DEPT.DEPT_NO
+*/
+/*SQL SERVER
+alter view V_EMPLEADOS
+as
+	select EMP.EMP_NO as IDEMPLEADO, EMP.APELLIDO, EMP.OFICIO, EMP.SALARIO, DEPT.DEPT_NO, DEPT.DNOMBRE, DEPT.LOC
+	from EMP
+	inner join DEPT 
+	on EMP.DEPT_NO = DEPT.DEPT_NO
+go*/
+#endregion
 
 namespace MvcNetCoreEFMultiplesBBDD.Repositories
 {
