@@ -1,7 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using MvcNetCoreEFMultiplesBBDD.Data;
 using MvcNetCoreEFMultiplesBBDD.Models;
+using Mysqlx.Crud;
+using Org.BouncyCastle.Pqc.Crypto.Lms;
+using Org.BouncyCastle.Utilities.Zlib;
 
 #region
 //create view V_EMPLEADOS
@@ -17,6 +21,40 @@ using MvcNetCoreEFMultiplesBBDD.Models;
 //begin
 //	select * from V_EMPLEADOS;
 //end $$
+//DELIMITER ;
+
+//DELIMITER $$
+
+//CREATE PROCEDURE SP_INSERT_EMPLEADOS(
+//    IN dnombre VARCHAR(50),
+//    IN apellido VARCHAR(50),
+//    IN oficio VARCHAR(50),
+//    IN dir INT,
+//    IN salario INT,
+//    IN comision INT
+//)
+//BEGIN
+//    DECLARE idDept INT;
+//DECLARE idEmpleado INT;
+//DECLARE fecha DATETIME;
+
+//--Obtener el DEPT_NO usando el DNOMBRE
+//    SELECT DEPT_NO INTO idDept FROM DEPT WHERE DNOMBRE = dnombre LIMIT 1;
+
+//--Obtener el siguiente EMP_NO
+//    SELECT COALESCE(MAX(EMP_NO), 0) + 1 INTO idEmpleado FROM EMP;
+
+//--Obtener la fecha actual
+//    SET fecha = NOW();
+
+//--Insertar los datos en la tabla EMP
+//    INSERT INTO EMP (EMP_NO, APELLIDO, OFICIO, DIR, FECHA, SALARIO, COMISION, DEPT_NO)
+//    VALUES (idEmpleado, apellido, oficio, dir, fecha, salario, comision, idDept);
+
+//SELECT idEmpleado AS NuevoIDEmpleado;
+
+//END $$
+
 //DELIMITER ;
 #endregion
 
@@ -50,6 +88,18 @@ namespace MvcNetCoreEFMultiplesBBDD.Repositories
             return await consulta.FirstOrDefaultAsync();
         }
 
+        public async Task<int> InsertEmpleado(string dnombre, string apellido, string oficio, int dir, int salario, int comision)
+        {
+            string sql = "SP_INSERT_EMPLEADOS @dnombre, @apellido, @oficio, @dir, @salario, @comision";
+            SqlParameter pamNombreDept = new SqlParameter("@dnombre", dnombre);
+            SqlParameter pamApe = new SqlParameter("@apellido", apellido);
+            SqlParameter pamOfi = new SqlParameter("@oficio", oficio);
+            SqlParameter pamDir = new SqlParameter("@dir", dir);
+            SqlParameter pamSalario = new SqlParameter("@salario", salario);
+            SqlParameter pamComision = new SqlParameter("@comision", comision);
+            int idEmpleado = await this.context.Database.ExecuteSqlRawAsync(sql, pamNombreDept, pamApe, pamOfi, pamDir, pamSalario, pamComision);
+            return idEmpleado;
+        }
 
     }
 }

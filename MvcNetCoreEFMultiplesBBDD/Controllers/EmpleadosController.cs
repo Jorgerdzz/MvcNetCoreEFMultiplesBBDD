@@ -26,5 +26,17 @@ namespace MvcNetCoreEFMultiplesBBDD.Controllers
             return View(empleado);
         }
 
+        public async Task<IActionResult> Insert()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Insert(string dnombre, string apellido, string oficio, int dir, int salario, int comision)
+        {
+            int idEmpleado = await this.repo.InsertEmpleado(dnombre, apellido, oficio, dir, salario, comision);
+            return RedirectToAction("Details", new {id = idEmpleado});
+        }
+
     }
 }
